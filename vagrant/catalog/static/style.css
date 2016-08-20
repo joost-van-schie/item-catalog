@@ -1,0 +1,80 @@
+body { 
+	font-family: helvetica; 
+	background-color: #f1f1f1;
+}
+
+a {
+	text-decoration: none;
+	color: #A3A3A3;
+	font-size: 12px;
+	text-transform: lowercase;
+}
+
+h1 {
+	font-size: 24px;
+}
+
+form {
+	display: block;
+}
+
+ul {
+	padding-left: 0;
+	list-style: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.wrapper {
+    width: 50%;
+    margin: 20px auto; 
+    background-color: #fff;
+    border: 1px solid #E5E5E5;	
+    padding: 15px 30px;
+    min-width: 50%;
+    max-width: 90%;
+}
+
+.menu-item-wrapper,
+.restaurant-wrapper {
+	color: #646464;
+    margin: 0;
+    margin-bottom: 20px;
+    border: 1px solid #E5E5E5;	
+    padding: 10px 20px;
+}
+
+.login-link,
+.back-to-restaurants-link,
+.new-restaurant-link,
+.new-menu-item-link {
+	color: #A3A3A3;
+	font-size: 16px;
+	text-transform: lowercase;
+	margin-bottom: 15px;
+	display: block;
+}
+
+.title {
+	margin-top: 0;
+	text-decoration: none;
+	font-size: 18px;
+	display: block;
+	margin-bottom: 5px;
+}
+
+.title.menu-item {
+	display: inline;
+}
+
+.price {
+	font-style: italic;
+	font-size: 10px;
+	float: right;
+}
+
+.description {
+	font-size: 12px;
+}

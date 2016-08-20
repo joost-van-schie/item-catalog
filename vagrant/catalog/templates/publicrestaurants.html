@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{% block content %}
+	<h1>Restaurants</h1>
+
+	<div class='flash'>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<ul>
+				{% for message in messages %}
+					<li><strong> {{ message }} </strong></li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+	</div>
+
+	{% for restaurant in restaurants %}
+		<div class="restaurant-wrapper">
+			<a class='restaurant title' href="{{ url_for('showMenu', restaurant_id=restaurant.id) }}">
+				{{restaurant.name}}
+			</a>
+		</div>
+	{% endfor %}
+{% endblock %}
