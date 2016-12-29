@@ -16,7 +16,7 @@ import json
 from flask import make_response
 import requests
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read()
@@ -30,7 +30,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-@app.route('/login')
+@application.route('/login')
 def showLogin():
     state = ''.join(
         random.choice(
@@ -41,7 +41,7 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
-@app.route('/gconnect', methods=['POST'])
+@application.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
     if request.args.get('state') != login_session['state']:
@@ -153,7 +153,7 @@ def gconnect():
     return output
 
 
-@app.route('/fbconnect', methods=['POST'])
+@application.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -259,7 +259,7 @@ def getUserID(email):
         return None
 
 
-@app.route('/fbdisconnect')
+@application.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must be included to successfully logout
@@ -274,7 +274,7 @@ def fbdisconnect():
 
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
-@app.route('/gdisconnect')
+@application.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
     credentials = json.loads(login_session.get('credentials'))
@@ -297,7 +297,7 @@ def gdisconnect():
 
 
 # Disconnect based on provider
-@app.route('/disconnect')
+@application.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
@@ -320,7 +320,7 @@ def disconnect():
 
 
 # JSON APIs to view Restaurant Information
-@app.route('/restaurants/JSON')
+@application.route('/restaurants/JSON')
 def restaurantsJSON():
     restaurants = session.query(Restaurant)
     return jsonify(
@@ -328,21 +328,21 @@ def restaurantsJSON():
     )
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/JSON')
+@application.route('/restaurant/<int:restaurant_id>/menu/JSON')
 def menuJSON(restaurant_id):
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
     return jsonify(items=[i.serialize for i in items])
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+@application.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
 def menuItemJSON(restaurant_id, menu_id):
     item = session.query(MenuItem).filter_by(id=menu_id).one()
     return jsonify(MenuItem=item.serialize)
 
 
 # Show all restaurants
-@app.route('/')
-@app.route('/restaurant/')
+@application.route('/')
+@application.route('/restaurant/')
 def showRestaurants():
     restaurants = session.query(Restaurant).order_by(asc(Restaurant.name))
     if 'username' not in login_session:
@@ -355,7 +355,7 @@ def showRestaurants():
 
 
 # Create a new restaurant
-@app.route('/restaurant/new', methods=['GET', 'POST'])
+@application.route('/restaurant/new', methods=['GET', 'POST'])
 def newRestaurant():
     # Check if user is logged in
     if 'username' not in login_session:
@@ -374,7 +374,7 @@ def newRestaurant():
         return render_template('newrestaurant.html')
 
 
-@app.route('/restaurant/<int:restaurant_id>/edit', methods=['GET', 'POST'])
+@application.route('/restaurant/<int:restaurant_id>/edit', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
     # Check if user is logged in
     if 'username' not in login_session:
@@ -409,7 +409,7 @@ def editRestaurant(restaurant_id):
         )
 
 
-@app.route('/restaurant/<int:restaurant_id>/delete', methods=['GET', 'POST'])
+@application.route('/restaurant/<int:restaurant_id>/delete', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
     # Check if user is logged in
     if 'username' not in login_session:
@@ -443,8 +443,8 @@ def deleteRestaurant(restaurant_id):
 
 
 # Show a restaurant menu
-@app.route('/restaurant/<int:restaurant_id>')
-@app.route('/restaurant/<int:restaurant_id>/menu')
+@application.route('/restaurant/<int:restaurant_id>')
+@application.route('/restaurant/<int:restaurant_id>/menu')
 def showMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
@@ -459,7 +459,7 @@ def showMenu(restaurant_id):
 
 
 # Create a new menu item
-@app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
+@application.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
     # Check if user is logged in
     if 'username' not in login_session:
@@ -493,7 +493,7 @@ def newMenuItem(restaurant_id):
 
 
 # Edit a menu item
-@app.route(
+@application.route(
     '/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit',
     methods=['GET', 'POST']
 )
@@ -533,7 +533,7 @@ def editMenuItem(restaurant_id, menu_id):
         )
 
 
-@app.route(
+@application.route(
     '/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete',
     methods=['GET', 'POST']
 )
